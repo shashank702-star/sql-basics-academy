@@ -225,10 +225,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Navigation & Tab Controls ---
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
+      const tabName = btn.getAttribute("data-tab");
+      
+      if (tabName === "sandbox" && highestCompletedLevel < 2) {
+        printConsoleMessage("🔒 AI Sandbox is locked! Solve Quest 1 (SELECT Columns) and Quest 2 (WHERE Filters) to unlock the AI Playground.", "error");
+        alert("🔒 AI Sandbox is locked! Solve Quest 1 (SELECT Columns) and Quest 2 (WHERE Filters) to unlock the AI Playground.");
+        return;
+      }
+      
       tabButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      
-      const tabName = btn.getAttribute("data-tab");
       currentMode = tabName;
       
       if (tabName === "quest") {
@@ -690,6 +696,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (unlockSummary) {
       unlockSummary.textContent = `Unlocked: ${highestCompletedLevel + 1}/5 Levels`;
     }
+
+    // Update Sandbox Nav tab lock styling
+    const sandboxNavTab = document.getElementById("sandbox-nav-tab");
+    if (sandboxNavTab) {
+      if (highestCompletedLevel >= 2) {
+        sandboxNavTab.textContent = "AI Playground";
+        sandboxNavTab.style.opacity = "1";
+        sandboxNavTab.style.cursor = "pointer";
+      } else {
+        sandboxNavTab.textContent = "🔒 AI Playground";
+        sandboxNavTab.style.opacity = "0.6";
+        sandboxNavTab.style.cursor = "not-allowed";
+      }
+    }
   }
 
   // Bind Copy Code Buttons
@@ -1106,6 +1126,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderLiveExamples(table) {
     if (!liveExamplesList) return;
+    
+    if (highestCompletedLevel < 2) {
+      liveExamplesList.innerHTML = `
+        <div style="font-size:0.85rem; color:#b45309; background:#fffbeb; border:1px solid #fef3c7; border-radius:6px; padding:0.75rem; line-height:1.4; display:flex; gap:0.5rem; align-items:center;">
+          <span>🔒</span>
+          <span><strong>Examples Locked:</strong> Complete Quest 1 and Quest 2 to unlock click-to-run live query templates.</span>
+        </div>
+      `;
+      return;
+    }
     
     let examples = [];
     if (table === "space_crew") {
