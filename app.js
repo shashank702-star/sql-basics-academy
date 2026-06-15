@@ -939,4 +939,243 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+  // --- Real-Time SQL Tutor & Explainer ---
+  const liveExplainerDesc = document.getElementById("live-explainer-desc");
+  const liveSyntaxDesc = document.getElementById("live-syntax-desc");
+  const liveExamplesList = document.getElementById("live-examples-list");
+
+  let realTimeTimeout;
+  if (editorInput) {
+    editorInput.addEventListener("input", () => {
+      clearTimeout(realTimeTimeout);
+      realTimeTimeout = setTimeout(analyzeQueryRealTime, 200);
+    });
+  }
+
+  function analyzeQueryRealTime() {
+    if (!liveExplainerDesc || !liveSyntaxDesc || !liveExamplesList) return;
+    const queryText = editorInput.value.trim();
+
+    if (queryText === "") {
+      liveExplainerDesc.innerHTML = "Start typing a query in the terminal to see a real-time explanation here.";
+      liveSyntaxDesc.innerHTML = "Ready to analyze your query.";
+      liveSyntaxDesc.style.background = "#f1f5f9";
+      liveSyntaxDesc.style.borderLeft = "4px solid #94a3b8";
+      liveSyntaxDesc.style.color = "#475569";
+      renderLiveExamples(null);
+      return;
+    }
+
+    const cleanQuery = queryText.replace(/;+$/, "").replace(/\s+/g, " ");
+    const lowerQuery = cleanQuery.toLowerCase();
+
+    // 1. Syntax Verification
+    const testResult = window.SQLDatabase.query(queryText);
+    if (testResult.success) {
+      liveSyntaxDesc.innerHTML = `✓ <strong>Valid SQL Query!</strong> Matches <strong>${testResult.data.length}</strong> row(s) in the database.`;
+      liveSyntaxDesc.style.background = "var(--accent-success-light)";
+      liveSyntaxDesc.style.borderLeft = "4px solid var(--accent-success)";
+      liveSyntaxDesc.style.color = "var(--accent-success)";
+    } else {
+      // Pre-flight checks for spelling or keywords
+      if (!lowerQuery.startsWith("select")) {
+        if (lowerQuery.startsWith("selec") || lowerQuery.startsWith("slect") || lowerQuery.startsWith("selct")) {
+          liveSyntaxDesc.innerHTML = "💡 <strong>Typo Alert!</strong> It looks like you misspelled the keyword <code>SELECT</code>.";
+        } else {
+          liveSyntaxDesc.innerHTML = "💡 <strong>Tip:</strong> SQL queries start with the <code>SELECT</code> keyword to request data.";
+        }
+      } else if (!lowerQuery.includes("from")) {
+        if (lowerQuery.includes("form")) {
+          liveSyntaxDesc.innerHTML = "💡 <strong>Typo Alert!</strong> You typed <code>FORM</code> instead of <code>FROM</code>. Easy mistake!";
+        } else {
+          liveSyntaxDesc.innerHTML = "💡 <strong>Tip:</strong> You need a <code>FROM</code> keyword to specify which table you want to query.";
+        }
+      } else {
+        liveSyntaxDesc.innerHTML = `⚠️ <strong>Syntax Tip:</strong> ${testResult.error}`;
+      }
+      liveSyntaxDesc.style.background = "var(--accent-amber-light)";
+      liveSyntaxDesc.style.borderLeft = "4px solid var(--accent-amber)";
+      liveSyntaxDesc.style.color = "var(--accent-amber)";
+    }
+
+    // 2. Query Structure Explainer (resilient parsing)
+    let explanationHTML = "";
+    
+    // Extract table
+    let table = "";
+    let isJoin = false;
+    let table1 = "";
+    let table2 = "";
+    
+    if (lowerQuery.includes(" join ")) {
+      isJoin = true;
+      const joinTablesMatch = cleanQuery.match(/from\s+(\w+)\s+join\s+(\w+)/i);
+      if (joinTablesMatch) {
+        table1 = joinTablesMatch[1];
+        table2 = joinTablesMatch[2];
+        table = `${table1} and ${table2}`;
+      }
+    } else {
+      const fromMatch = cleanQuery.match(/from\s+(\w+)/i);
+      if (fromMatch) {
+        table = fromMatch[1];
+      }
+    }
+
+    if (table) {
+      const dbTables = Object.keys(window.SQLDatabase.datasets);
+      const isTable1Valid = isJoin ? dbTables.includes(table1.toLowerCase()) : false;
+      const isTable2Valid = isJoin ? dbTables.includes(table2.toLowerCase()) : false;
+      const isSingleTableValid = !isJoin && dbTables.includes(table.toLowerCase());
+
+      if (isSingleTableValid || (isJoin && isTable1Valid && isTable2Valid)) {
+        if (isJoin) {
+          explanationHTML += `• Querying tables: <strong>${table1}</strong> and <strong>${table2}</strong> (Joined)<br>`;
+          const onMatch = cleanQuery.match(/on\s+([\w\.]+)\s*=\s*([\w\.]+)/i);
+          if (onMatch) {
+            explanationHTML += `• Matching records where: <code>${onMatch[1]}</code> equals <code>${onMatch[2]}</code><br>`;
+          } else {
+            explanationHTML += `• <span style="color:var(--accent-amber);">Waiting for join ON condition...</span><br>`;
+          }
+        } else {
+          explanationHTML += `• Querying table: <strong>${table}</strong><br>`;
+        }
+
+        // Columns
+        let selectCols = "";
+        const selectMatch = cleanQuery.match(/select\s+(.+?)\s+from/i);
+        if (selectMatch) {
+          selectCols = selectMatch[1].trim();
+        } else {
+          const selectOnlyMatch = cleanQuery.match(/select\s+(.+)$/i);
+          if (selectOnlyMatch) selectCols = selectOnlyMatch[1].trim();
+        }
+
+        if (selectCols) {
+          if (selectCols === "*") {
+            explanationHTML += "• Selecting: <strong>all columns</strong> from the table.<br>";
+          } else {
+            explanationHTML += `• Selecting columns: <strong>${selectCols}</strong><br>`;
+          }
+        }
+
+        // Filters
+        const whereMatch = cleanQuery.match(/where\s+(.+?)(?:order\s+by|limit|$)/i);
+        if (whereMatch) {
+          explanationHTML += `• Filtering rows where: <code>${whereMatch[1].trim()}</code><br>`;
+        }
+
+        // Sorting
+        const orderMatch = cleanQuery.match(/order\s+by\s+(.+?)(?:limit|$)/i);
+        if (orderMatch) {
+          explanationHTML += `• Sorting output by: <code>${orderMatch[1].trim()}</code><br>`;
+        }
+
+        // Limits
+        const limitMatch = cleanQuery.match(/limit\s+(\d+)/i);
+        if (limitMatch) {
+          explanationHTML += `• Limiting output to: <strong>${limitMatch[1]}</strong> row(s).<br>`;
+        }
+
+        liveExplainerDesc.innerHTML = `<div style="display:flex; flex-direction:column; gap:0.25rem;">${explanationHTML}</div>`;
+        renderLiveExamples(isJoin ? "space_missions" : table.toLowerCase());
+      } else {
+        const invalidTable = !isJoin ? table : (!isTable1Valid ? table1 : table2);
+        liveExplainerDesc.innerHTML = `⚠️ Table <strong>${invalidTable}</strong> does not exist. Available tables are: <code>space_crew</code>, <code>planets</code>, <code>cargo</code>, <code>space_missions</code>.`;
+        renderLiveExamples(null);
+      }
+    } else {
+      // SELECT is typed but no table
+      let selectCols = "";
+      const selectOnlyMatch = cleanQuery.match(/select\s+(.+)$/i);
+      if (selectOnlyMatch) selectCols = selectOnlyMatch[1].trim();
+      
+      if (selectCols) {
+        if (selectCols === "*") {
+          liveExplainerDesc.innerHTML = "• Selecting: <strong>all columns</strong>.<br>Waiting for table name (type <code>FROM table_name</code>)...";
+        } else {
+          liveExplainerDesc.innerHTML = `• Selecting columns: <strong>${selectCols}</strong>.<br>Waiting for table name (type <code>FROM table_name</code>)...`;
+        }
+      } else {
+        liveExplainerDesc.innerHTML = "Start typing a query in the terminal to see a real-time explanation here.";
+      }
+      renderLiveExamples(null);
+    }
+  }
+
+  function renderLiveExamples(table) {
+    if (!liveExamplesList) return;
+    
+    let examples = [];
+    if (table === "space_crew") {
+      examples = [
+        { label: "Show all crew", sql: "SELECT * FROM space_crew;" },
+        { label: "Find active crew", sql: "SELECT name, role FROM space_crew WHERE status = 'Active';" },
+        { label: "Count total crew", sql: "SELECT COUNT(*) FROM space_crew;" },
+        { label: "Sort crew by experience", sql: "SELECT name, years_active FROM space_crew ORDER BY years_active DESC;" }
+      ];
+    } else if (table === "planets") {
+      examples = [
+        { label: "Show all planets", sql: "SELECT * FROM planets;" },
+        { label: "Planets with life", sql: "SELECT name, distance_ly FROM planets WHERE has_life = true;" },
+        { label: "Closest 3 planets", sql: "SELECT name, distance_ly FROM planets ORDER BY distance_ly ASC LIMIT 3;" }
+      ];
+    } else if (table === "cargo") {
+      examples = [
+        { label: "Show all cargo", sql: "SELECT * FROM cargo;" },
+        { label: "Unsecured cargo items", sql: "SELECT item, category FROM cargo WHERE secured = false;" },
+        { label: "Sort cargo by weight", sql: "SELECT item, weight_kg FROM cargo ORDER BY weight_kg DESC;" }
+      ];
+    } else if (table === "space_missions") {
+      examples = [
+        { label: "Show all missions", sql: "SELECT * FROM space_missions;" },
+        { label: "Join crew with destinations", sql: "SELECT space_crew.name, space_missions.destination FROM space_crew JOIN space_missions ON space_crew.id = space_missions.pilot_id;" }
+      ];
+    } else {
+      // Default / general examples
+      examples = [
+        { label: "SELECT crew", sql: "SELECT * FROM space_crew;" },
+        { label: "SELECT planets", sql: "SELECT * FROM planets;" },
+        { label: "SELECT cargo", sql: "SELECT * FROM cargo;" }
+      ];
+    }
+
+    let html = `<div style="display:flex; flex-direction:column; gap:0.5rem;">`;
+    examples.forEach(ex => {
+      html += `
+        <div class="live-example-chip" data-sql="${ex.sql}" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.5rem 0.75rem; cursor:pointer; font-family:'JetBrains Mono', monospace; font-size:0.8rem; transition:all 0.15s ease; color:var(--text-color); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600;">${ex.label}</span>
+          <code style="font-size:0.75rem; color:var(--accent-indigo); max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${ex.sql}</code>
+        </div>
+      `;
+    });
+    html += `</div>`;
+    liveExamplesList.innerHTML = html;
+
+    // Bind example chip clicks
+    const chips = liveExamplesList.querySelectorAll(".live-example-chip");
+    chips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        const sql = chip.getAttribute("data-sql");
+        editorInput.value = sql;
+        updateHighlighting();
+        analyzeQueryRealTime();
+        executeSQL();
+      });
+      // hover animations
+      chip.addEventListener("mouseenter", () => {
+        chip.style.border = "1px solid var(--accent-indigo)";
+        chip.style.background = "#f0f4ff";
+      });
+      chip.addEventListener("mouseleave", () => {
+        chip.style.border = "1px solid #e2e8f0";
+        chip.style.background = "#f8fafc";
+      });
+    });
+  }
+
+  // Run once initially
+  analyzeQueryRealTime();
 });
+
