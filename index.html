@@ -168,6 +168,19 @@
             </ul>
           </div>
 
+          <div class="schema-card-v2" data-table="space_missions">
+            <div class="schema-card-v2-header">
+              <span class="table-name">📁 space_missions</span>
+              <button class="quick-view-btn" data-table="space_missions" title="Quick View Data">👁️ View</button>
+            </div>
+            <ul class="schema-columns-list">
+              <li data-col="id"><span class="col-name">id</span> <span class="col-type">INT</span></li>
+              <li data-col="pilot_id"><span class="col-name">pilot_id</span> <span class="col-type">INT</span></li>
+              <li data-col="destination"><span class="col-name">destination</span> <span class="col-type">VARCHAR</span></li>
+              <li data-col="ship"><span class="col-name">ship</span> <span class="col-type">VARCHAR</span></li>
+            </ul>
+          </div>
+
         </div>
       </section>
     </div>
@@ -217,7 +230,7 @@
           <p class="quest-intro">Unlock video lessons, cheat handbooks, and syntax guides by clearing training levels. <strong>100% Free &amp; Open Learning.</strong></p>
         </div>
         <div class="resource-lock-status-indicator" id="resource-unlock-summary">
-          Unlocked: 1/3 Levels
+          Unlocked: 1/5 Levels
         </div>
       </div>
 
@@ -249,6 +262,20 @@
               <a href="https://www.youtube.com/watch?v=85pG_pZgQL8" target="_blank" class="resource-link-btn disabled">Solve Quest 2 to Unlock</a>
             </div>
 
+            <div class="resource-card locked" data-resource-lvl="4">
+              <div class="card-status-badge">Locked</div>
+              <h4>Lesson 4: SQL Aggregations &amp; Math</h4>
+              <p>Learn counting rows and averaging values with COUNT and AVG.</p>
+              <a href="https://www.youtube.com/watch?v=F3_mPZ4y_B0" target="_blank" class="resource-link-btn disabled">Solve Quest 3 to Unlock</a>
+            </div>
+
+            <div class="resource-card locked" data-resource-lvl="5">
+              <div class="card-status-badge">Locked</div>
+              <h4>Lesson 5: Relational JOINs</h4>
+              <p>Learn to connect multiple tables together using key columns.</p>
+              <a href="https://www.youtube.com/watch?v=9yeOJ0xxTuk" target="_blank" class="resource-link-btn disabled">Solve Quest 4 to Unlock</a>
+            </div>
+
           </div>
         </div>
 
@@ -278,6 +305,20 @@
               <a href="#" class="resource-link-btn disabled">Solve Quest 2 to Unlock</a>
             </div>
 
+            <div class="resource-card locked" data-resource-lvl="4">
+              <div class="card-status-badge">Locked</div>
+              <h4>Guide: Aggregations &amp; Math</h4>
+              <p>Unlock by completing the fourth level training.</p>
+              <a href="#" class="resource-link-btn disabled">Solve Quest 3 to Unlock</a>
+            </div>
+
+            <div class="resource-card locked" data-resource-lvl="5">
+              <div class="card-status-badge">Locked</div>
+              <h4>Guide: Relational JOINs</h4>
+              <p>Unlock by completing the fifth level training.</p>
+              <a href="#" class="resource-link-btn disabled">Solve Quest 4 to Unlock</a>
+            </div>
+
           </div>
         </div>
 
@@ -304,6 +345,20 @@
               <div class="card-status-badge">Locked</div>
               <h4>ORDER BY sorting</h4>
               <pre class="notes-code">SELECT * FROM planets ORDER BY distance_ly DESC;</pre>
+              <button class="copy-code-btn disabled" disabled>Locked</button>
+            </div>
+
+            <div class="resource-card locked" data-resource-lvl="4">
+              <div class="card-status-badge">Locked</div>
+              <h4>Aggregations &amp; Counts</h4>
+              <pre class="notes-code">SELECT COUNT(*), AVG(years_active) FROM space_crew;</pre>
+              <button class="copy-code-btn disabled" disabled>Locked</button>
+            </div>
+
+            <div class="resource-card locked" data-resource-lvl="5">
+              <div class="card-status-badge">Locked</div>
+              <h4>JOIN Operations</h4>
+              <pre class="notes-code">SELECT space_crew.name, space_missions.destination FROM space_crew JOIN space_missions ON space_crew.id = space_missions.pilot_id;</pre>
               <button class="copy-code-btn disabled" disabled>Locked</button>
             </div>
 
