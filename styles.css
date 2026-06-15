@@ -1548,4 +1548,25 @@ footer {
   line-height: 1.45;
 }
 
+/* Documentation styles */
+.doc-menu-btn:hover {
+  background: var(--bg-secondary) !important;
+  color: var(--accent-primary) !important;
+}
+
+.docs-viewer-panel table th {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.docs-viewer-panel table td {
+  color: var(--color-text-main);
+  border-bottom: 1px solid var(--border-color);
+}
+
+
 

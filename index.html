@@ -21,6 +21,7 @@
       <button class="nav-tab active" data-tab="quest">Quest Mode</button>
       <button class="nav-tab" data-tab="sandbox" id="sandbox-nav-tab">🔒 AI Playground</button>
       <button class="nav-tab" data-tab="resources">Learning Resources</button>
+      <button class="nav-tab" data-tab="docs">Documentation</button>
     </nav>
   </header>
 
@@ -405,6 +406,178 @@
         </div>
 
       </div>
+    </section>
+  </main>
+
+  <!-- Documentation Hub Workspace -->
+  <main id="workspace-docs" class="workspace hidden" style="grid-template-columns: 280px 1fr; gap: 1.5rem; max-width: 1500px; margin: 1.5rem auto; padding: 0 2rem;">
+    
+    <!-- Left column: Doc Navigation Sidebar -->
+    <aside class="panel docs-sidebar" style="display: flex; flex-direction: column; gap: 0.5rem; height: fit-content; position: sticky; top: 90px;">
+      <h3 style="font-family: var(--font-sans); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; color: var(--color-text-main);">Guides &amp; Docs</h3>
+      
+      <button class="doc-menu-btn active" data-doc="project-guide" style="text-align: left; background: var(--bg-secondary); color: var(--accent-primary); border: none; font-family: var(--font-sans); font-size: 0.9rem; font-weight: 600; padding: 0.6rem 0.8rem; border-radius: var(--border-radius-sm); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: var(--transition-smooth); width: 100%;">
+        <span>📖</span> SQL Quest Project Guide
+      </button>
+      
+      <button class="doc-menu-btn" data-doc="antigravity-dev" style="text-align: left; background: transparent; color: var(--color-text-muted); border: none; font-family: var(--font-sans); font-size: 0.9rem; font-weight: 550; padding: 0.6rem 0.8rem; border-radius: var(--border-radius-sm); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: var(--transition-smooth); width: 100%;">
+        <span>🤖</span> Antigravity Dev Guide
+      </button>
+    </aside>
+
+    <!-- Right column: Doc Viewer Pane -->
+    <section class="panel docs-viewer-panel" style="padding: 2.5rem; max-height: 80vh; overflow-y: auto;">
+      
+      <!-- Document 1: Project Guide Content -->
+      <article id="doc-content-project-guide" class="doc-article">
+        <h1 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.5px;">SQL Quest: Architectural &amp; Technical Guide</h1>
+        <p style="color: var(--color-text-muted); margin-bottom: 1.5rem; font-size: 1.05rem;">A comprehensive breakdown of the application architecture, database schemas, custom SQL parser logic, validation systems, and locking features.</p>
+        
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin: 1.5rem 0 0.75rem;">🗺️ Architectural Overview</h2>
+        <p style="margin-bottom: 1rem;">SQL Quest is built as a single-page application (SPA) with zero external server dependencies, running entirely client-side. The codebase consists of three main files:</p>
+        <ul style="margin: 0 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <li><strong>index.html</strong>: Defines the 3-pane layout (sidebar roadmap/AI copilot, database browser, editor/results pane).</li>
+          <li><strong>styles.css</strong>: Theme variables and visual aesthetics based on the Tech-Editorial Light design token system.</li>
+          <li><strong>database.js</strong>: Custom in-browser parser/runner simulating table scans, where filtering, joins, and aggregates.</li>
+          <li><strong>app.js</strong>: State machine controller (current quest, tab states, unlocks), editor syntax highlighter, and Real-Time Tutor keystroke parser.</li>
+        </ul>
+
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin: 2rem 0 0.75rem;">💾 Space Academy Database Schema</h2>
+        <p style="margin-bottom: 1rem;">The environment hosts four space-themed tables designed to teach basic SQL relational structures. All tables are defined inside <code>database.js</code>:</p>
+        
+        <h3 style="font-size: 1.15rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--accent-primary);">1. space_crew</h3>
+        <p style="margin-bottom: 0.75rem; font-size: 0.95rem;">Contains the roster of cadets, officers, and droids aboard the ship.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; border: 1px solid var(--border-color);">
+          <thead>
+            <tr style="background: var(--bg-secondary); text-align: left; border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 0.6rem 1rem;">Column</th>
+              <th style="padding: 0.6rem 1rem;">Type</th>
+              <th style="padding: 0.6rem 1rem;">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">id</td><td style="padding: 0.5rem 1rem;">INTEGER</td><td style="padding: 0.5rem 1rem;">Unique identifier (Primary Key)</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">name</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Full name of crew member</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">role</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Professional role designation</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">status</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Current status (Active, Suspended, Retired)</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">years_active</td><td style="padding: 0.5rem 1rem;">INTEGER</td><td style="padding: 0.5rem 1rem;">Years of service in the academy</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="font-size: 1.15rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--accent-primary);">2. planets</h3>
+        <p style="margin-bottom: 0.75rem; font-size: 0.95rem;">Holds astronomical details about discovered planets.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; border: 1px solid var(--border-color);">
+          <thead>
+            <tr style="background: var(--bg-secondary); text-align: left; border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 0.6rem 1rem;">Column</th>
+              <th style="padding: 0.6rem 1rem;">Type</th>
+              <th style="padding: 0.6rem 1rem;">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">id</td><td style="padding: 0.5rem 1rem;">INTEGER</td><td style="padding: 0.5rem 1rem;">Planetary identifier (Primary Key)</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">name</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Name of the planet</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">distance_ly</td><td style="padding: 0.5rem 1rem;">FLOAT</td><td style="padding: 0.5rem 1rem;">Distance from home dock in Light-Years</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">type</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Terrestrial, Gas Giant, or Ice Giant composition</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">has_life</td><td style="padding: 0.5rem 1rem;">BOOLEAN</td><td style="padding: 0.5rem 1rem;">TRUE if biosignatures detected</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="font-size: 1.15rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--accent-primary);">3. cargo</h3>
+        <p style="margin-bottom: 0.75rem; font-size: 0.95rem;">Tracks supplies stored inside the ship's freight compartments.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; border: 1px solid var(--border-color);">
+          <thead>
+            <tr style="background: var(--bg-secondary); text-align: left; border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 0.6rem 1rem;">Column</th>
+              <th style="padding: 0.6rem 1rem;">Type</th>
+              <th style="padding: 0.6rem 1rem;">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">id</td><td style="padding: 0.5rem 1rem;">INTEGER</td><td style="padding: 0.5rem 1rem;">Cargo identifier (Primary Key)</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">item</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Name of the cargo shipment item</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">category</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Classification (Tech, Supplies, Fuel, Specimens)</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">weight_kg</td><td style="padding: 0.5rem 1rem;">INTEGER</td><td style="padding: 0.5rem 1rem;">Mass of the items in kilograms</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">secured</td><td style="padding: 0.5rem 1rem;">BOOLEAN</td><td style="padding: 0.5rem 1rem;">TRUE if locked into storage slots</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="font-size: 1.15rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--accent-primary);">4. space_missions</h3>
+        <p style="margin-bottom: 0.75rem; font-size: 0.95rem;">Tracks flight path routes, matching pilots back to the crew roster.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.9rem; border: 1px solid var(--border-color);">
+          <thead>
+            <tr style="background: var(--bg-secondary); text-align: left; border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 0.6rem 1rem;">Column</th>
+              <th style="padding: 0.6rem 1rem;">Type</th>
+              <th style="padding: 0.6rem 1rem;">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">id</td><td style="padding: 0.5rem 1rem;">INTEGER</td><td style="padding: 0.5rem 1rem;">Mission identifier (Primary Key)</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">pilot_id</td><td style="padding: 0.5rem 1rem;">INTEGER</td><td style="padding: 0.5rem 1rem;">Crew pilot reference (Foreign Key matching space_crew.id)</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">destination</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Target planetary destination</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 0.5rem 1rem; font-family: var(--font-mono);">ship</td><td style="padding: 0.5rem 1rem;">VARCHAR</td><td style="padding: 0.5rem 1rem;">Hull name of spaceship assigned</td></tr>
+          </tbody>
+        </table>
+
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin: 2rem 0 0.75rem;">⚙️ In-Browser Database Engine</h2>
+        <p style="margin-bottom: 1rem;">The database simulator (<code>database.js</code>) utilizes strict regular expressions to process user queries locally:</p>
+        <ul style="margin: 0 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <li><strong>Keyword Typos</strong>: Alerts users to spellings like <code>SELEC</code> or <code>FORM</code> before failure.</li>
+          <li><strong>Filtering &amp; Sorting</strong>: Executes custom predicates for <code>WHERE</code> operators, and sorts variables descending or ascending.</li>
+          <li><strong>Relational JOINs</strong>: Combines records from two tables by performing a cartesian product scan and matching rows on specified key equations.</li>
+          <li><strong>Aggregates</strong>: Computes inline counts, sums, and averages (e.g. <code>COUNT(*)</code>, <code>AVG(years_active)</code>).</li>
+        </ul>
+
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin: 2rem 0 0.75rem;">🛡️ Sandbox &amp; Chip Locking</h2>
+        <div style="background: var(--accent-primary-light); color: var(--accent-primary); border-left: 4px solid var(--accent-primary); padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.95rem;">
+          <strong>IMPORTANT LOCK CONDITIONS</strong>: Sandbox tab access and interactive click-to-run examples in the Tutor sidepanel are locked initially. They unlock reactively in real-time as soon as you complete Quest 1 and Quest 2.
+        </div>
+      </article>
+
+      <!-- Document 2: Antigravity Dev Guide Content -->
+      <article id="doc-content-antigravity-dev" class="doc-article hidden">
+        <h1 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.5px;">Developing &amp; Generating with Antigravity</h1>
+        <p style="color: var(--color-text-muted); margin-bottom: 1.5rem; font-size: 1.05rem;">Learn how SQL Quest was generated using Google DeepMind's Antigravity assistant, and how to write prompts to modify it.</p>
+        
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin: 1.5rem 0 0.75rem;">🚀 The Local-First Design Philosophy</h2>
+        <p style="margin-bottom: 1rem;">Building SQL Quest as a zero-dependency, client-side application provides distinct benefits:</p>
+        <ul style="margin: 0 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <li><strong>Zero Latency</strong>: Queries run locally in milliseconds, allowing rapid trial-and-error typing.</li>
+          <li><strong>Educational Warnings</strong>: Allows custom error hooks that intercept bad syntax and provide specific recommendations.</li>
+          <li><strong>No Server Maintenance</strong>: Ensures hosting is completely free forever.</li>
+        </ul>
+
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin: 2rem 0 0.75rem;">💬 Prompt Templates to Extend SQL Quest</h2>
+        <p style="margin-bottom: 1rem;">You can collaborate with Antigravity in your chat to modify the codebase. Use these direct templates:</p>
+        
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+          <h4 style="margin-bottom: 0.5rem; color: var(--color-text-main);">1. Add a New Table</h4>
+          <code style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-primary);">"Add a new table named hull_sections (id, section_name, damage_level, shield_active). Add 5 mock rows in database.js, and update the schema card list in index.html."</code>
+        </div>
+
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+          <h4 style="margin-bottom: 0.5rem; color: var(--color-text-main);">2. Create a Quest Level</h4>
+          <code style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-primary);">"Let's add Quest 6 called 'Repair the Hull' in app.js. Require selecting hull_sections with damage_level &gt; 50 sorted desc. Write a validation check and add a Roadmap Node."</code>
+        </div>
+
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
+          <h4 style="margin-bottom: 0.5rem; color: var(--color-text-main);">3. Style Customizations</h4>
+          <code style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-primary);">"Change the main theme accent from Tech Indigo to Cyberpunk Purple. Update css variable --accent-primary to #7c3aed in styles.css."</code>
+        </div>
+
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin: 2rem 0 0.75rem;">🧪 Automated Testing Routine</h2>
+        <p style="margin-bottom: 1rem;">To verify the SQL engine logic offline, run the pre-built test files using Node.js:</p>
+        <pre style="background: var(--color-text-main); color: #f8fafc; padding: 1rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 1.5rem; overflow-x: auto;">
+node scratch/test_parser.js
+node scratch/test_expanded.js
+        </pre>
+      </article>
+
     </section>
   </main>
 

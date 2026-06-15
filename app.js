@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const workspaceQuest = document.getElementById("workspace-quest");
   const workspaceSandbox = document.getElementById("workspace-sandbox");
   const workspaceResources = document.getElementById("workspace-resources");
+  const workspaceDocs = document.getElementById("workspace-docs");
 
   // AI Playground UI Elements
   const aiPromptInput = document.getElementById("ai-prompt-input");
@@ -242,19 +243,26 @@ document.addEventListener("DOMContentLoaded", () => {
         workspaceQuest.classList.remove("hidden");
         workspaceSandbox.classList.add("hidden");
         workspaceResources.classList.add("hidden");
+        workspaceDocs.classList.add("hidden");
         initQuest(currentQuestIndex);
       } else if (tabName === "sandbox") {
         mainWorkspace.classList.remove("hidden");
         workspaceQuest.classList.add("hidden");
         workspaceSandbox.classList.remove("hidden");
         workspaceResources.classList.add("hidden");
+        workspaceDocs.classList.add("hidden");
         editorInput.value = "SELECT * FROM planets;";
         updateHighlighting();
         clearConsole();
       } else if (tabName === "resources") {
         mainWorkspace.classList.add("hidden");
         workspaceResources.classList.remove("hidden");
+        workspaceDocs.classList.add("hidden");
         updateUnlockedResources();
+      } else if (tabName === "docs") {
+        mainWorkspace.classList.add("hidden");
+        workspaceResources.classList.add("hidden");
+        workspaceDocs.classList.remove("hidden");
       }
     });
   });
@@ -1204,6 +1212,36 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+  // --- Documentation Sub-tab Navigation ---
+  const docMenuButtons = document.querySelectorAll(".doc-menu-btn");
+  const docArticleProject = document.getElementById("doc-content-project-guide");
+  const docArticleAntigravity = document.getElementById("doc-content-antigravity-dev");
+
+  docMenuButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      // Remove active from all doc buttons
+      docMenuButtons.forEach(b => {
+        b.classList.remove("active");
+        b.style.background = "transparent";
+        b.style.color = "var(--color-text-muted)";
+      });
+
+      // Set active on clicked
+      btn.classList.add("active");
+      btn.style.background = "var(--bg-secondary)";
+      btn.style.color = "var(--accent-primary)";
+
+      const docId = btn.getAttribute("data-doc");
+      if (docId === "project-guide") {
+        docArticleProject.classList.remove("hidden");
+        docArticleAntigravity.classList.add("hidden");
+      } else if (docId === "antigravity-dev") {
+        docArticleProject.classList.add("hidden");
+        docArticleAntigravity.classList.remove("hidden");
+      }
+    });
+  });
 
   // Run once initially
   analyzeQueryRealTime();
