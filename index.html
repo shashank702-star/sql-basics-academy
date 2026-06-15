@@ -218,6 +218,40 @@
           </div>
         </div>
       </section>
+
+      <!-- Real-Time SQL Assistant & Live Explainer -->
+      <section class="panel live-assistant-panel" id="live-assistant-area" style="margin-top: 1.5rem;">
+        <div class="assistant-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+          <h3 style="margin: 0; font-size: 1.1rem; font-family: 'Space Grotesk', sans-serif;">Live Tutor &amp; Query Explainer</h3>
+          <span class="assistant-badge" style="background: var(--accent-amber-light); color: var(--accent-amber); font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid var(--accent-amber);">⚡ Real-Time Feedback</span>
+        </div>
+        
+        <div class="assistant-content" style="display: flex; flex-direction: column; gap: 1rem;">
+          <!-- Real-time Query Breakdown -->
+          <div class="assistant-block" id="live-explainer-block">
+            <h4 class="block-title" style="margin: 0 0 0.5rem 0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">🔍 Query Structure</h4>
+            <div id="live-explainer-desc" class="explainer-description" style="font-size: 0.9rem; line-height: 1.4; color: var(--text-color); background: var(--bg-grid); padding: 0.75rem; border-radius: 6px; border: 1px dashed var(--border-color);">
+              Start typing a query in the terminal to see a real-time explanation here.
+            </div>
+          </div>
+
+          <!-- Syntax Checker / Tips -->
+          <div class="assistant-block" id="live-syntax-block">
+            <h4 class="block-title" style="margin: 0 0 0.5rem 0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">💡 Live Syntax Check</h4>
+            <div id="live-syntax-desc" class="syntax-description status-info" style="font-size: 0.9rem; line-height: 1.4; padding: 0.75rem; border-radius: 6px; background: #f1f5f9; border-left: 4px solid #94a3b8; color: #475569;">
+              Ready to analyze your query.
+            </div>
+          </div>
+
+          <!-- Live Context-Aware Examples -->
+          <div class="assistant-block" id="live-examples-block">
+            <h4 class="block-title" style="margin: 0 0 0.5rem 0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">📖 Click-to-Run Live Examples</h4>
+            <div class="live-examples-container" id="live-examples-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <span class="no-examples-msg" style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Enter a valid table name (like <code>space_crew</code>, <code>planets</code>, or <code>cargo</code>) to see matching real-time examples here.</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 
