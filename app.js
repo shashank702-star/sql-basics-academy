@@ -101,6 +101,48 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
       },
       successMessage: "Brilliant! You've sorted the cargo bay. The Titanium Plating (1200kg) and Deuterium Fuel Cells (800kg) are at the top of the list. We're fully balanced and ready to jump! Quest 3 Completed!"
+    },
+    {
+      title: "Quest 4: Fuel Consumption & Crew Counts",
+      description: "We are calculating our food and oxygen consumption ratios. Before modifying the allocations, we need to know the total number of **Active** crew members on board and their average experience (years active).",
+      objective: "Calculate the **total count** of crew members and their **average years active** where `status` is `'Active'`.",
+      hint: "Use `COUNT(*)` and `AVG(years_active)` aggregate functions together:\n`SELECT COUNT(*), AVG(years_active) FROM space_crew WHERE status = 'Active';`",
+      initialQuery: "SELECT COUNT(*), AVG(years_active) FROM space_crew WHERE ;",
+      validate: (result) => {
+        if (!result.success) return false;
+        if (result.tableName !== "space_crew") return false;
+        if (result.data.length !== 1) return false;
+        const row = result.data[0];
+        const keys = Object.keys(row);
+        const countKey = keys.find(k => k.toLowerCase().replace(/\s+/g, "") === "count(*)");
+        const avgKey = keys.find(k => k.toLowerCase().replace(/\s+/g, "") === "avg(years_active)");
+        if (!countKey || !avgKey) return false;
+        return row[countKey] == 5 && Math.round(row[avgKey]) == 10;
+      },
+      successMessage: "Splendid! We have exactly 5 active crew members with an average of 10 years of experience. Our crew is highly skilled and ready to maintain flight operations! Quest 4 Completed!"
+    },
+    {
+      title: "Quest 5: Destination Flight Log",
+      description: "Now, let's map out where our pilots are flying. Since mission details are kept in the `space_missions` table and crew names are in the `space_crew` table, we need to link them together.",
+      objective: "Perform a **JOIN** between `space_crew` and `space_missions` on `space_crew.id = space_missions.pilot_id` to retrieve the pilot's `name` and their mission `destination`.",
+      hint: "Join tables using `JOIN` and the `ON` matching column criteria:\n`SELECT space_crew.name, space_missions.destination FROM space_crew JOIN space_missions ON space_crew.id = space_missions.pilot_id;`",
+      initialQuery: "SELECT space_crew.name, space_missions.destination FROM space_crew JOIN space_missions ON ;",
+      validate: (result) => {
+        if (!result.success) return false;
+        if (result.tableName !== "space_crew_join_space_missions") return false;
+        if (result.data.length !== 3) return false;
+        const matches = result.data.map(row => {
+          const keys = Object.keys(row);
+          const nameKey = keys.find(k => k.endsWith("name"));
+          const destKey = keys.find(k => k.endsWith("destination"));
+          return { name: row[nameKey], dest: row[destKey] };
+        });
+        const hasNova = matches.some(m => m.name === "Commander Nova" && m.dest === "Zephyr-7");
+        const hasZara = matches.some(m => m.name === "Zara Chen" && m.dest === "Valkyrie");
+        const hasSam = matches.some(m => m.name === "SAM-9" && m.dest === "Gorgon Prime");
+        return hasNova && hasZara && hasSam;
+      },
+      successMessage: "Incredible! You have successfully linked the crew with their destinations. Zara is heading to Valkyrie, Commander Nova to Zephyr-7, and SAM-9 to Gorgon Prime. You have completed all flight academy quests! Master Badge Earned!"
     }
   ];
 
@@ -455,7 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
     questProgressFill.style.width = "100%";
-    questProgressText.textContent = "Progress: 3/3 Quests Completed - Master Badge Earned!";
+    questProgressText.textContent = "Progress: 5/5 Quests Completed - Master Badge Earned!";
     
     document.getElementById("restart-quests-btn").addEventListener("click", () => {
       initQuest(0);
@@ -574,6 +616,12 @@ document.addEventListener("DOMContentLoaded", () => {
           } else if (cardLvl === 3) {
             link.href = "https://www.youtube.com/watch?v=85pG_pZgQL8";
             link.textContent = "Watch Video (12 min) \u2192";
+          } else if (cardLvl === 4) {
+            link.href = "https://www.youtube.com/watch?v=F3_mPZ4y_B0";
+            link.textContent = "Watch Video (10 min) \u2192";
+          } else if (cardLvl === 5) {
+            link.href = "https://www.youtube.com/watch?v=9yeOJ0xxTuk";
+            link.textContent = "Watch Video (12 min) \u2192";
           } else if (cardLvl === 1 && link.getAttribute("download")) {
             // Unlocked download link remains standard
           } else if (cardLvl === 2 && !link.getAttribute("download")) {
@@ -583,6 +631,14 @@ document.addEventListener("DOMContentLoaded", () => {
           } else if (cardLvl === 3 && !link.getAttribute("download")) {
             link.setAttribute("download", "SQL_ORDER_LIMIT_Guide.txt");
             link.href = "data:text/plain;charset=utf-8,ORDER BY & LIMIT GUIDE:%0A- Use ORDER BY to sort rows by a column.%0A- Syntax: SELECT * FROM table ORDER BY column [ASC|DESC];%0A- Use LIMIT to restrict the number of rows returned.%0A- Syntax: SELECT * FROM table LIMIT number;%0A- Example: SELECT * FROM cargo ORDER BY weight_kg DESC LIMIT 3;";
+            link.textContent = "Download Guide (TXT) \u2193";
+          } else if (cardLvl === 4 && !link.getAttribute("download")) {
+            link.setAttribute("download", "SQL_Aggregations_Guide.txt");
+            link.href = "data:text/plain;charset=utf-8,SQL AGGREGATIONS %26 MATH GUIDE:%0A- Aggregations summarize a column of numbers into one value.%0A- Functions:%0A  COUNT(*) : Count total rows.%0A  AVG(column) : Calculate average.%0A  SUM(column) : Calculate sum.%0A  MIN(column) : Get lowest value.%0A  MAX(column) : Get highest value.%0A- Example: SELECT COUNT(*), AVG(years_active) FROM space_crew WHERE status = 'Active';";
+            link.textContent = "Download Guide (TXT) \u2193";
+          } else if (cardLvl === 5 && !link.getAttribute("download")) {
+            link.setAttribute("download", "SQL_JOINs_Guide.txt");
+            link.href = "data:text/plain;charset=utf-8,SQL JOINS %26 RELATIONSHIPS GUIDE:%0A- JOIN is used to connect two or more tables together based on a related column.%0A- Syntax: SELECT columns FROM table1 JOIN table2 ON table1.column = table2.column;%0A- Example: SELECT space_crew.name, space_missions.destination FROM space_crew JOIN space_missions ON space_crew.id = space_missions.pilot_id;";
             link.textContent = "Download Guide (TXT) \u2193";
           }
         }
@@ -596,6 +652,12 @@ document.addEventListener("DOMContentLoaded", () => {
           } else if (cardLvl === 3) {
             copyBtn.textContent = "Copy Code";
             copyBtn.setAttribute("data-code", "SELECT * FROM planets ORDER BY distance_ly DESC;");
+          } else if (cardLvl === 4) {
+            copyBtn.textContent = "Copy Code";
+            copyBtn.setAttribute("data-code", "SELECT COUNT(*), AVG(years_active) FROM space_crew WHERE status = 'Active';");
+          } else if (cardLvl === 5) {
+            copyBtn.textContent = "Copy Code";
+            copyBtn.setAttribute("data-code", "SELECT space_crew.name, space_missions.destination FROM space_crew JOIN space_missions ON space_crew.id = space_missions.pilot_id;");
           }
         }
       } else {
@@ -626,7 +688,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const unlockSummary = document.getElementById("resource-unlock-summary");
     if (unlockSummary) {
-      unlockSummary.textContent = `Unlocked: ${highestCompletedLevel + 1}/3 Levels`;
+      unlockSummary.textContent = `Unlocked: ${highestCompletedLevel + 1}/5 Levels`;
     }
   }
 
@@ -673,6 +735,22 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         content += "LEVEL 3: ORDER BY & LIMIT (Locked - Complete Quest 2 to unlock)\n\n";
       }
+
+      if (highestCompletedLevel >= 3) {
+        content += "LEVEL 4: AGGREGATIONS & MATH (Unlocked)\n";
+        content += "Syntax:\nSELECT COUNT(*), AVG(column), SUM(column) FROM table WHERE condition;\n";
+        content += "Example:\nSELECT COUNT(*), AVG(years_active) FROM space_crew WHERE status = 'Active';\n\n";
+      } else {
+        content += "LEVEL 4: AGGREGATIONS & MATH (Locked - Complete Quest 3 to unlock)\n\n";
+      }
+
+      if (highestCompletedLevel >= 4) {
+        content += "LEVEL 5: RELATIONAL JOINS (Unlocked)\n";
+        content += "Syntax:\nSELECT columns FROM table1 JOIN table2 ON table1.key = table2.key;\n";
+        content += "Example:\nSELECT space_crew.name, space_missions.destination FROM space_crew JOIN space_missions ON space_crew.id = space_missions.pilot_id;\n\n";
+      } else {
+        content += "LEVEL 5: RELATIONAL JOINS (Locked - Complete Quest 4 to unlock)\n\n";
+      }
       
       const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -700,8 +778,24 @@ document.addEventListener("DOMContentLoaded", () => {
     let sql = "";
     let explanation = "";
 
-    if (p.includes("crew") || p.includes("member") || p.includes("people") || p.includes("manifest") || p.includes("person")) {
-      if (p.includes("active") && p.includes("years") && (p.includes("more than") || p.includes("over") || p.includes(">") || p.includes("greater"))) {
+    if (p.includes("crew") || p.includes("member") || p.includes("people") || p.includes("manifest") || p.includes("person") || p.includes("active") || p.includes("captain") || p.includes("navigator") || p.includes("commander")) {
+      if (p.includes("count") || p.includes("how many")) {
+        if (p.includes("active")) {
+          sql = "SELECT COUNT(*) FROM space_crew WHERE status = 'Active';";
+          explanation = "I counted the total number of crew members in the `space_crew` table where the `status` is 'Active'.";
+        } else {
+          sql = "SELECT COUNT(*) FROM space_crew;";
+          explanation = "I counted the total number of records in the `space_crew` table.";
+        }
+      } else if (p.includes("average") || p.includes("experience") || p.includes("avg")) {
+        if (p.includes("active")) {
+          sql = "SELECT AVG(years_active) FROM space_crew WHERE status = 'Active';";
+          explanation = "I calculated the average of the `years_active` column in the `space_crew` table where `status` is 'Active'.";
+        } else {
+          sql = "SELECT AVG(years_active) FROM space_crew;";
+          explanation = "I calculated the average of the `years_active` column for the entire `space_crew` table.";
+        }
+      } else if (p.includes("active") && p.includes("years") && (p.includes("more than") || p.includes("over") || p.includes(">") || p.includes("greater"))) {
         sql = "SELECT * FROM space_crew WHERE status = 'Active' AND years_active > 10;";
         explanation = "I filtered the `space_crew` table where `status` equals 'Active' and `years_active` is greater than 10.";
       } else if (p.includes("active")) {
@@ -713,12 +807,20 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (p.includes("navigator")) {
         sql = "SELECT * FROM space_crew WHERE role = 'Navigator';";
         explanation = "I searched the `space_crew` table where the `role` is exactly 'Navigator'.";
-      } else if (p.includes("sort") || p.includes("order") || p.includes("experience") || p.includes("years")) {
+      } else if (p.includes("sort") || p.includes("order") || p.includes("years")) {
         sql = "SELECT * FROM space_crew ORDER BY years_active DESC;";
         explanation = "I selected all crew members and sorted them by `years_active` in descending order (highest first).";
       } else {
         sql = "SELECT * FROM space_crew;";
         explanation = "I retrieved all columns and records from the `space_crew` table.";
+      }
+    } else if (p.includes("mission") || p.includes("destination") || p.includes("pilot") || p.includes("fly") || p.includes("heading")) {
+      if (p.includes("name") || p.includes("destination") || p.includes("pilot")) {
+        sql = "SELECT space_crew.name, space_missions.destination FROM space_crew JOIN space_missions ON space_crew.id = space_missions.pilot_id;";
+        explanation = "I joined the `space_crew` table with the `space_missions` table matching `space_crew.id` with `space_missions.pilot_id` to show each pilot's name and mission destination.";
+      } else {
+        sql = "SELECT * FROM space_missions;";
+        explanation = "I selected all columns and records from the `space_missions` table.";
       }
     } else if (p.includes("planet") || p.includes("world") || p.includes("space") || p.includes("exoplanet")) {
       if (p.includes("life") || p.includes("habitable") || p.includes("living")) {
