@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404: Lost in Space - SQL Quest</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌌</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .lost-container {
+      max-width: 600px;
+      margin: 10vh auto;
+      text-align: center;
+      padding: 3rem;
+    }
+    .lost-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      animation: drift 4s ease-in-out infinite;
+    }
+    @keyframes drift {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(-8deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    .lost-container h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--color-text-main);
+    }
+    .lost-container p {
+      color: var(--color-text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel lost-container">
+    <span class="lost-icon">👨‍🚀</span>
+    <h1>404: Lost in Space</h1>
+    <p>We've lost transmission signal! It looks like you've drifted off course and landed in uncharted space. Let's get you back to the coordinates of the Star Seeker.</p>
+    <a href="/" class="action-btn" style="text-decoration: none; display: inline-block;">Return to Bridge</a>
+  </div>
+</body>
+</html>

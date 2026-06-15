@@ -1,0 +1,7 @@
+# Editor and system files
+.gemini/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
