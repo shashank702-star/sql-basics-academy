@@ -2,9 +2,10 @@
 
 SQL Quest is an interactive, single-page web application designed to welcome absolute beginners to SQL. It features an in-browser query engine, guided space-themed quests, a learning roadmap, and an AI SQL Playground.
 
-## 🚀 Live Production URL
+## 🚀 Live Production URLs
 The project is hosted and accessible publicly at:
-👉 **[https://opensigma-sqlquest.surge.sh](https://opensigma-sqlquest.surge.sh)**
+- **GitHub Pages**: 👉 [https://shashank702-star.github.io/sql-basics-academy/](https://shashank702-star.github.io/sql-basics-academy/)
+- **Surge**: 👉 [https://opensigma-sqlquest.surge.sh](https://opensigma-sqlquest.surge.sh)
 
 ---
 
