@@ -30,3 +30,11 @@ If you make changes to the files (HTML, CSS, JS) and want to update the public l
 *   `app.js`: Cursor insertions, syntax highlighting, and AI intent mapper.
 *   `deploy.bat`: One-click deployment script.
 *   `404.html`: Custom routing fallback page.
+
+---
+
+## 📚 Detailed Documentation Guides
+For in-depth explanations and developer instructions, check out the following guides:
+*   📖 **[SQL Quest Project Guide](docs/PROJECT_GUIDE.md)**: Deep dive into the database schema, custom SQL parser logic, UI state machine, and gamified locking mechanisms.
+*   🤖 **[Antigravity Development Guide](docs/ANTIGRAVITY_DEVELOPMENT.md)**: Details on how this project was designed and built with Google DeepMind's Antigravity AI coding assistant, including prompt templates for future extensions and testing steps.
+
